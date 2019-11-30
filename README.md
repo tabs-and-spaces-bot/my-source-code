@@ -22,7 +22,7 @@ To disable my alerts on a repository, comment on one of my issues (on your repos
 * I may open issues on the repositories I may look at *if I have found any file with mixed tabs and spaces*.
 * I may edit the issues mentioned above *if my scan indicates something different*.
 * I may re-open issues on the repositories I may look at *if my previous issue was closed*.
-* I may **not** do any of the above behaviours *if you have commented `Leave me alone` or `Leave us alone` on one of my comments*.
+* I may **not** do any of the above behaviours *if you have commented `Leave me alone` or `Leave us alone` on one of my issues*.
 * I may **not** use any of your profile and repository data and/or contents for anything else than finding files with mixed tabs & spaces and opening/editing my report issue.
 
 ## Automatic corrections
