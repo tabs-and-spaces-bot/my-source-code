@@ -59,8 +59,9 @@ function handle_repo(repo) {
       for (let file of files) {
         let type = mime.getType(file[1]);
         let is_text = type && (type.startsWith("text/") || type === "application/javascript" || type === "application/json");
-        if (typeof contents === "string" && is_text) {
+        if (is_text) {
           let contents = await query.file(repo, file);
+          if (typeof contents !== "string") continue;
           let result = verify(contents);
           if (result) {
             to_audit.push([file[0], file[1], result]);
