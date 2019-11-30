@@ -24,6 +24,18 @@ const query_repos = module.exports.repos = function query_repos(users) {
   return Promise.all(promises).then((repos) => [].concat(...repos));
 }
 
+const query_master = module.exports.master = function query_master(repo) {
+  return new Promise((resolve, reject) => {
+    let repo_query = client.getRepo(repo.owner.login, repo.name);
+    repo_query.listBranches((err, branches) => {
+      if (err) reject(err);
+      let master = branches.find(branch => branch.name === "master");
+      if (!master) reject();
+      resolve(master);
+    });
+  });
+}
+
 const query_files = module.exports.files = function query_files(repo) {
   return new Promise((resolve, reject) => {
     let repo_query = client.getRepo(repo.owner.login, repo.name);

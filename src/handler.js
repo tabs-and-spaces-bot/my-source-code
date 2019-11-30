@@ -12,6 +12,12 @@ const file_stack = [];
 let n_files = 0;
 let n_repos = 0;
 
+if (!fs.readdirSync(path.resolve(__dirname, "..")).includes("commits.json")) {
+  fs.writeFileSync(path.resolve(__dirname, "../commits.json"), "{}", "utf8");
+}
+
+let last_commits = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../commits.json")));
+
 module.exports = function handler(client, me) {
   console.log(`Listing followers...`);
   me.listFollowers(async (err, followers) => {
@@ -23,6 +29,7 @@ module.exports = function handler(client, me) {
     for (let repo of repos) {
       n++;
       console.log(`${repo.full_name} (${n}/${repos.length})`);
+
       let issues = await query.issues(repo);
       let should_handle = true;
       for (let issue of issues) {
@@ -33,6 +40,13 @@ module.exports = function handler(client, me) {
             should_handle = false;
           }
         }
+      }
+
+      let master = await query.master(repo);
+      if (master.commit.sha === last_commits[repo.full_name]) {
+        should_handle = false;
+      } else {
+        last_commits[repo.full_name] = master.commit.sha;
       }
       if (should_handle) {
         n_repos++;
@@ -47,6 +61,8 @@ module.exports = function handler(client, me) {
     for (let repo of to_audit) {
       handle_issues(repo);
     }
+
+    fs.writeFileSync(path.resolve(__dirname, "../commits.json"), JSON.stringify(last_commits), "utf8");
   });
 }
 
@@ -59,7 +75,7 @@ function handle_repo(repo) {
       for (let file of files) {
         let type = mime.getType(file[1]);
         let is_text = type && (type.startsWith("text/") || type === "application/javascript" || type === "application/json");
-        if (is_text) {
+        if (is_text && file[0].size < (settings.max_file_size || 250000)) {
           let contents = await query.file(repo, file);
           if (typeof contents !== "string") continue;
           let result = verify(contents);
