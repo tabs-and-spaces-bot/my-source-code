@@ -19,7 +19,10 @@ module.exports = function handler(client, me) {
     let repos = await query.repos(followers);
     let promises = [];
     console.log(`Checking files...`);
+    let n = 0;
     for (let repo of repos) {
+      n++;
+      console.log(`${repo.full_name} (${n}/${repos.length})`);
       let issues = await query.issues(repo);
       let should_handle = true;
       for (let issue of issues) {
@@ -110,7 +113,7 @@ function gen_body(to_audit) {
     result += `* \`${path}\` (**${spaces}** spaces, **${tabs}** tabs, **${mixed}** mixed)\n`;
   }
   result += `\n`;
-  result += `<sub>*I am a bot; if you think this "alert" is a mistake, contact @adri326*.</sub>\n`
+  result += `<sub>*I am a bot; if you think this "alert" is a mistake, open an [issue](https://github.com/tabs-and-spaces-bot/my-source-code/issues) or contact @adri326*.</sub>\n`
   result += `<sub>*If you wish to disable this bot's scan of this repository, please comment with \`leave me alone\` or \`leave us alone\`.*</sub>`;
   return result;
 }
