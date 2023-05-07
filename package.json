@@ -9,7 +9,7 @@
   "author": "Shad Amethyst",
   "license": "WTFPL",
   "dependencies": {
-    "github-api": "^3.3.0",
+    "github-api": "^3.4.0",
     "mime": "^2.4.4"
   }
 }
